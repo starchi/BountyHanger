@@ -1,0 +1,12 @@
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.MainForm.resources
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.Properties.Resources.resources
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.UI.TeamControl.resources
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\GenerateResource.read.1.tlog
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\GenerateResource.write.1.tlog
+D:\Projects\BountyHanger\BountyHanger\bin\Debug\BountyHanger.exe
+D:\Projects\BountyHanger\BountyHanger\bin\Debug\BountyHanger.pdb
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.exe
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.pdb
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.UI.TeamHeroControl.resources
+D:\Projects\BountyHanger\BountyHanger\obj\x86\Debug\BountyHanger.UI.TeamUnitsControl.resources
