@@ -46,12 +46,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Library\Character.cs" />
+    <Compile Include="Library\Boss.cs" />
+    <Compile Include="Library\Combat.cs" />
+    <Compile Include="Library\Corps.cs" />
+    <Compile Include="Library\Elite.cs" />
+    <Compile Include="Library\Equip.cs" />
     <Compile Include="Library\Game.cs" />
     <Compile Include="Library\Hero.cs" />
+    <Compile Include="Library\Interface\IStackableUnit.cs" />
+    <Compile Include="Library\Item.cs" />
+    <Compile Include="Library\Minions.cs" />
+    <Compile Include="Library\MonsterTeam.cs" />
     <Compile Include="Library\Player.cs" />
+    <Compile Include="Library\PlayerTeam.cs" />
+    <Compile Include="Library\RandomBuilder.cs" />
+    <Compile Include="Library\Skill.cs" />
     <Compile Include="Library\TaskSystem.cs" />
     <Compile Include="Library\Team.cs" />
+    <Compile Include="Library\Corp.cs" />
     <Compile Include="Library\Unit.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

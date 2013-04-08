@@ -27,10 +27,10 @@ namespace BountyHanger.UI
 
         public void SetTeam(Team team) {
             this.Team = team;
-            this.HeroControl.SetHeroName(this.Team.Hero.Name);
-            this.UnitsControl.SetPosition(this.Team.Hero.Leadership);
-            this.UnitsControl.SetUnits(this.Team.Units);
-            this.TeamHPLabel.Text = "部队HP: " + this.Team.TeamHeal;
+            //this.HeroControl.SetHeroName(this.Team.Hero.Name);
+            //this.UnitsControl.SetPosition(this.Team.Hero.Leadership);
+            //this.UnitsControl.SetUnits(this.Team.Units);
+            //this.TeamHPLabel.Text = "部队HP: " + this.Team.TeamHeal;
         }
 
         private void ChangeHeroButton_Click(object sender, EventArgs e)

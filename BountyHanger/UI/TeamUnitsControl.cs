@@ -32,7 +32,7 @@ namespace BountyHanger.UI
         }
 
 
-        public void SetUnits(Unit[] units)
+        public void SetUnits(Corp[] units)
         {
             if (units.Length > position)
             {

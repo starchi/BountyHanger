@@ -17,8 +17,8 @@ namespace BountyHanger
         public MainForm()
         {
             InitializeComponent();
-            game.TestGame();
-            TeamControl.SetTeam(game.Team);
+            //game.TestGame();
+            //TeamControl.SetTeam(game.Team);
         }
 
         private void mainTimer_Tick(object sender, EventArgs e)
