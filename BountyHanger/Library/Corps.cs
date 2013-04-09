@@ -8,28 +8,30 @@ namespace BountyHanger.Library
 {
     public class Corps : Unit, IStackableUnit
     {
+        public int TotalCount;
         public int AliveCount;
         public int DeadCount;
-        public int CurrentHP;
-        public int MaxHP
+        public new int CurrentHP;
+        public override int MaxHP
         {
             get
             {
-                return this.HealPoint * this.AliveCount;
+                return base.MaxHP * this.AliveCount;
             }
         }
-        public int TotalAttack
+        public override int CurrentAttack
         {
             get
             {
-                return this.Attack * this.AliveCount;
+                return base.CurrentAttack * this.AliveCount;
             }
         }
 
         public Corps(int unitID, int count)
             : base(unitID)
         {
-            this.AliveCount = count;
+            this.TotalCount = count;
+            this.AliveCount = this.TotalCount;
             this.DeadCount = 0;
             this.CurrentHP = this.MaxHP;
         }
@@ -38,19 +40,19 @@ namespace BountyHanger.Library
         /// 受到伤害
         /// </summary>
         /// <param name="damage">伤害值</param>
-        /// <returns>伤害结算信息{Name}</returns>
-        public string BeHurt(int damage)
+        /// <returns>伤害结算日志</returns>
+        public override string BeDamage(int damage)
         {
             //溢出伤害修正
+            int damage_real = damage;
             if (damage >= this.CurrentHP)
             {
-                damage = this.CurrentHP;
-                this.IsDestroyed = true;
+                damage_real = this.CurrentHP;
             }
             //计算伤害杀掉的数量
-            int killCount = damage / this.HealPoint;
+            int killCount = damage_real / base.MaxHP;
             //额外杀掉伤兵
-            if (damage % this.HealPoint >= this.MaxHP - this.CurrentHP)
+            if (damage % this.MaxHP >= this.MaxHP - this.CurrentHP)
             {
                 killCount++;
             }
@@ -58,49 +60,13 @@ namespace BountyHanger.Library
             this.CurrentHP -= damage;
             this.AliveCount -= killCount;
             this.DeadCount += killCount;
-            //返回信息
-            return UnitName + "受到" + damage + "点伤害，损失" + killCount + "个单位。" + (this.IsDestroyed ? UnitName + "被消灭了。" : "");
-        }
-
-        public void ResetActionState()
-        {
-            if (this.ActionState != UnitActionState.Dead)
+            if (this.AliveCount == 0)
             {
-                this.ActionState = UnitActionState.Ready;
+                this.ActionState = UnitActionState.Dead;
             }
+            //返回日志
+            return this.UnitName + "受到" + damage + "点伤害，损失" + killCount + "个单位。" + (this.ActionState == UnitActionState.Dead ? this.UnitName + "被消灭了。" : "");
         }
-
-        public string Action(int turn, MonsterTeam enemy)
-        {
-            if (this.ActionState != UnitActionState.Dead)
-            {
-                this.ActionState = UnitActionState.Done;
-            }
-            PassiveEffect();
-            if (IsActiveSkillTiming())
-            {
-
-            }
-            else
-            {
-                Attack(Targeting(enemy));
-            }
-            return "部队行动";
-        }
-
-        public void PassiveEffect()
-        {
-            if (PassiveSkill != null)
-            {
-                //PassiveSkill.Spell();
-            }
-        }
-
-        public bool IsActiveSkillTiming()
-        {
-            return false;
-        }
-
 
     }
 }

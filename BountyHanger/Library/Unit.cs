@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace BountyHanger.Library
 {
     public enum UnitActionState
     {
+        [Description("单位待命中")]
         Ready,
+        [Description("单位已行动")]
         Done,
-        Dead
+        [Description("单位已死亡")]
+        Dead,
     }
 
     public class Unit
@@ -17,10 +21,34 @@ namespace BountyHanger.Library
         public int UnitID;
         public string UnitName;
         public int HealPoint;
-        public int Attack;
+        public int AttackPower;
+        public int CurrentHP;
+        private int _maxHP;
+        public virtual int MaxHP
+        {
+            get
+            {
+                return _maxHP;
+            }
+            set
+            {
+                _maxHP = value;
+            }
+        }
+        private int _currentAttack;
+        public virtual int CurrentAttack
+        {
+            get
+            {
+                return _currentAttack;
+            }
+            set
+            {
+                _currentAttack = value;
+            }
+        }
         public Skill ActiveSkill;
         public Skill PassiveSkill;
-        public bool IsDestroyed;
         public UnitActionState ActionState;
 
         #region 构造函数
@@ -29,17 +57,20 @@ namespace BountyHanger.Library
             //test
             this.UnitID = id;
             this.UnitName = "民兵";
-            this.HealPoint = 1;
-            this.Attack = 1;
+            this.HealPoint = 3;
+            this.MaxHP = this.HealPoint;
+            this.CurrentHP = this.MaxHP;
+            this.AttackPower = 1;
+            this.CurrentAttack = AttackPower;
             this.ActiveSkill = null;
             this.PassiveSkill = null;
-            this.IsDestroyed = false;
+            ResetActionState();
         }
 
         public Unit(int id, int count)
             : this(id)
         {
-            this.AliveCount = count;
+            //this.AliveCount = count;
         }
         #endregion
 
@@ -47,7 +78,7 @@ namespace BountyHanger.Library
         /// 重置行动状态
         /// 如果英雄未死亡则重置为待命状态
         /// </summary>
-        public void ResetActionState()
+        public virtual void ResetActionState()
         {
             if (this.ActionState != UnitActionState.Dead)
             {
@@ -61,7 +92,7 @@ namespace BountyHanger.Library
         /// <param name="turn">当前回合数</param>
         /// <param name="enemy">敌人（怪物队伍）</param>
         /// <returns>行动日志</returns>
-        public string Action(int turn, Team enemy)
+        public virtual string Action(int turn, Team enemy)
         {
             //如已死亡则返回空字符串，否则修改为已行动
             if (this.ActionState == UnitActionState.Dead)
@@ -90,14 +121,17 @@ namespace BountyHanger.Library
         /// <summary>
         /// 随机攻击
         /// </summary>
-        /// <param name="enemy"></param>
-        /// <returns></returns>
+        /// <param name="enemy">敌人队伍</param>
+        /// <returns>攻击日志</returns>
         private string RandomAttack(Team enemy)
         {
             StringBuilder actionLog = new StringBuilder();
             //随机选择目标单位
             Unit target = RandomTargetAliveEnemy(enemy);
-
+            actionLog.AppendLine(this.UnitName + "对" + target.UnitName + "发动攻击。");
+            //目标受到伤害
+            string result = target.BeDamage(this.CurrentAttack);
+            actionLog.AppendLine(result);
             return actionLog.ToString();
         }
 
@@ -113,7 +147,7 @@ namespace BountyHanger.Library
             double randValue = 0;
 
             //根据敌人类型（怪物/玩家）进行遍历
-            if (enemy.GetType() == Type.GetType("MonsterTeam"))
+            if (enemy.GetType() == Type.GetType("BountyHanger.Library.MonsterTeam"))
             {
                 MonsterTeam monster = (MonsterTeam)enemy;
                 #region 遍历怪物未死亡单位
@@ -181,6 +215,27 @@ namespace BountyHanger.Library
             }
 
             return targetUnit;
+        }
+
+        /// <summary>
+        /// 单位受到伤害
+        /// </summary>
+        /// <param name="damege">受到的伤害值</param>
+        /// <returns>结算结果日志</returns>
+        public virtual string BeDamage(int damege)
+        {
+            this.CurrentHP -= damege;
+            //判断是否死亡
+            if (this.CurrentHP <= 0)
+            {
+                this.CurrentHP = 0;
+                this.ActionState = UnitActionState.Dead;
+                return this.UnitName + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。" + this.UnitName + "被击毙。";
+            }
+            else
+            {
+                return this.UnitName + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。";
+            }
         }
     }
 }

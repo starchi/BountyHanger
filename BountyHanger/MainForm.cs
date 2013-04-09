@@ -25,5 +25,13 @@ namespace BountyHanger
         {
             //game.GoOn();
         }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            PlayerTeam pt = new PlayerTeam();
+            MonsterTeam mt = new MonsterTeam();
+            Combat combat = new Combat(pt,mt);
+            combat.BeginCombat();
+        }
     }
 }

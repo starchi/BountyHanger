@@ -58,7 +58,7 @@ namespace BountyHanger.Library
                 {
                     //玩家队伍
                     PlayerTeam.DoNextAction(turn,MonsterTeam);
-                    //MonsterTeam.NextAction(PlayerTeam);
+                    //MonsterTeam.DoNextAction(turn,PlayerTeam);
                 }
             }
         }

@@ -42,8 +42,12 @@ namespace BountyHanger.Library
         /// </summary>
         public PlayerTeam()
         {
-            this.Hero = null;
-            this.Corps = null;
+            this.Hero = new Hero(0, 3);
+            this.Corps = new Corps[Hero.Leadership];
+            for (int i = 0; i < Corps.Length; i++)
+            {
+                this.Corps[i] = new Corps(0, 10 * i);
+            }
             ResetActionState();
         }
 
@@ -77,6 +81,7 @@ namespace BountyHanger.Library
                 //英雄行动
                 //修改队伍行动状态为英雄行动结束
                 this.ActionState = PlayerActionState.HeroDone;
+                //notice:v1英雄不会死不判断英雄跟是否存活
                 //执行英雄动作
                 return Hero.Action(turn, enemy);
             }

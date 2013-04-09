@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.mainTimer = new System.Windows.Forms.Timer(this.components);
             this.TeamControl = new BountyHanger.UI.TeamControl();
+            this.TestButton = new System.Windows.Forms.Button();
+            this.TestTextBox = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // mainTimer
@@ -45,15 +47,36 @@
             this.TeamControl.Size = new System.Drawing.Size(217, 273);
             this.TeamControl.TabIndex = 0;
             // 
+            // TestButton
+            // 
+            this.TestButton.Location = new System.Drawing.Point(506, 204);
+            this.TestButton.Name = "TestButton";
+            this.TestButton.Size = new System.Drawing.Size(75, 23);
+            this.TestButton.TabIndex = 1;
+            this.TestButton.Text = "Test";
+            this.TestButton.UseVisualStyleBackColor = true;
+            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
+            // 
+            // TestTextBox
+            // 
+            this.TestTextBox.Location = new System.Drawing.Point(268, 12);
+            this.TestTextBox.Multiline = true;
+            this.TestTextBox.Name = "TestTextBox";
+            this.TestTextBox.Size = new System.Drawing.Size(313, 186);
+            this.TestTextBox.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 730);
+            this.Controls.Add(this.TestTextBox);
+            this.Controls.Add(this.TestButton);
             this.Controls.Add(this.TeamControl);
             this.Name = "MainForm";
             this.Text = "BountyHanger";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -61,6 +84,8 @@
 
         private System.Windows.Forms.Timer mainTimer;
         private UI.TeamControl TeamControl;
+        private System.Windows.Forms.Button TestButton;
+        private System.Windows.Forms.TextBox TestTextBox;
     }
 }
 
