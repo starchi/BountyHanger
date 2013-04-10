@@ -8,10 +8,27 @@ namespace BountyHanger.Library
 {
     public class Corps : Unit, IStackableUnit
     {
+        /// <summary>
+        /// 总数量
+        /// </summary>
         public int TotalCount;
+        /// <summary>
+        /// 存活数量
+        /// </summary>
         public int AliveCount;
+        /// <summary>
+        /// 死亡数量
+        /// </summary>
         public int DeadCount;
-        public new int CurrentHP;
+
+        /// <summary>
+        /// 当前体力值，目前没有当前体力值的限制逻辑，暂时不需要额外new
+        /// </summary>
+        //public new int CurrentHP;
+
+        /// <summary>
+        /// 最大体力值
+        /// </summary>
         public override int MaxHP
         {
             get
@@ -19,6 +36,10 @@ namespace BountyHanger.Library
                 return base.MaxHP * this.AliveCount;
             }
         }
+
+        /// <summary>
+        /// 当前攻击力
+        /// </summary>
         public override int CurrentAttack
         {
             get
@@ -26,14 +47,23 @@ namespace BountyHanger.Library
                 return base.CurrentAttack * this.AliveCount;
             }
         }
+        /// <summary>
+        /// 装备
+        /// </summary>
+        public Equip Equip;
 
         public Corps(int unitID, int count)
             : base(unitID)
         {
+            if (count == 0)
+            {
+                count = 1;
+            }
             this.TotalCount = count;
             this.AliveCount = this.TotalCount;
             this.DeadCount = 0;
             this.CurrentHP = this.MaxHP;
+            this.Equip = null;
         }
 
         /// <summary>
@@ -50,22 +80,23 @@ namespace BountyHanger.Library
                 damage_real = this.CurrentHP;
             }
             //计算伤害杀掉的数量
-            int killCount = damage_real / base.MaxHP;
+            int killCount = damage_real / base._maxHP;
             //额外杀掉伤兵
-            if (damage % this.MaxHP >= this.MaxHP - this.CurrentHP)
+            if (this.MaxHP > this.CurrentHP && damage_real % base.MaxHP >= base._maxHP - this.MaxHP + this.CurrentHP)
             {
                 killCount++;
             }
             //数值处理
-            this.CurrentHP -= damage;
+            this.CurrentHP -= damage_real;
             this.AliveCount -= killCount;
             this.DeadCount += killCount;
             if (this.AliveCount == 0)
             {
                 this.ActionState = UnitActionState.Dead;
+                this.Team.MemberDead(this);
             }
             //返回日志
-            return this.UnitName + "受到" + damage + "点伤害，损失" + killCount + "个单位。" + (this.ActionState == UnitActionState.Dead ? this.UnitName + "被消灭了。" : "");
+            return this.Name + "受到" + damage + "点伤害，损失" + killCount + "个单位。部队存活：" + this.AliveCount + "/" + this.TotalCount + "。部队体力：" + this.CurrentHP + "/" + this.MaxHP + "。" + (this.ActionState == UnitActionState.Dead ? this.Name + "被消灭了。" : "");
         }
 
     }

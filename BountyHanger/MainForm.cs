@@ -30,8 +30,8 @@ namespace BountyHanger
         {
             PlayerTeam pt = new PlayerTeam();
             MonsterTeam mt = new MonsterTeam();
-            Combat combat = new Combat(pt,mt);
-            combat.BeginCombat();
+            Combat combat = new Combat(pt, mt);
+            this.TestTextBox.Text = combat.BeginCombat();
         }
     }
 }

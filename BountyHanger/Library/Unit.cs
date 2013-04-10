@@ -18,12 +18,41 @@ namespace BountyHanger.Library
 
     public class Unit
     {
+        /// <summary>
+        /// 单位ID
+        /// </summary>
         public int UnitID;
-        public string UnitName;
+        private string _unitName;
+        /// <summary>
+        /// 单位名称
+        /// </summary>
+        public virtual string Name
+        {
+            get
+            {
+                return _unitName+"("+UnitID+")";
+            }
+            set
+            {
+                _unitName = value;
+            }
+        }
+        /// <summary>
+        /// 基础体力
+        /// </summary>
         public int HealPoint;
+        /// <summary>
+        /// 基础攻击力
+        /// </summary>
         public int AttackPower;
+        /// <summary>
+        /// 当前体力值
+        /// </summary>
         public int CurrentHP;
-        private int _maxHP;
+        internal int _maxHP;
+        /// <summary>
+        /// 最大体力值
+        /// </summary>
         public virtual int MaxHP
         {
             get
@@ -36,6 +65,9 @@ namespace BountyHanger.Library
             }
         }
         private int _currentAttack;
+        /// <summary>
+        /// 当前攻击力
+        /// </summary>
         public virtual int CurrentAttack
         {
             get
@@ -47,16 +79,30 @@ namespace BountyHanger.Library
                 _currentAttack = value;
             }
         }
+        /// <summary>
+        /// 主动技能
+        /// </summary>
         public Skill ActiveSkill;
+        /// <summary>
+        /// 被动技能
+        /// </summary>
         public Skill PassiveSkill;
+        /// <summary>
+        /// 单位行动状态
+        /// </summary>
         public UnitActionState ActionState;
+
+        /// <summary>
+        /// 所在队伍
+        /// </summary>
+        public Team Team;
 
         #region 构造函数
         public Unit(int id)
         {
             //test
             this.UnitID = id;
-            this.UnitName = "民兵";
+            _unitName = "民兵";
             this.HealPoint = 3;
             this.MaxHP = this.HealPoint;
             this.CurrentHP = this.MaxHP;
@@ -65,18 +111,22 @@ namespace BountyHanger.Library
             this.ActiveSkill = null;
             this.PassiveSkill = null;
             ResetActionState();
-        }
-
-        public Unit(int id, int count)
-            : this(id)
-        {
-            //this.AliveCount = count;
+            this.Team = null;
         }
         #endregion
 
         /// <summary>
+        /// 加入队伍
+        /// </summary>
+        /// <param name="team">要加入的队伍</param>
+        public void JoinTeam(Team team)
+        {
+            this.Team = team;
+        }
+
+        /// <summary>
         /// 重置行动状态
-        /// 如果英雄未死亡则重置为待命状态
+        /// 如果单位未死亡则重置为待命状态
         /// </summary>
         public virtual void ResetActionState()
         {
@@ -108,14 +158,14 @@ namespace BountyHanger.Library
             if (false)
             {
                 //释放主动技能
-                return "单位释放技能";
+                //return "单位释放技能";
             }
             else
             {
                 //随机攻击敌人
                 return RandomAttack(enemy);
             }
-            return "单位行动";
+            //return "单位行动";
         }
 
         /// <summary>
@@ -128,7 +178,7 @@ namespace BountyHanger.Library
             StringBuilder actionLog = new StringBuilder();
             //随机选择目标单位
             Unit target = RandomTargetAliveEnemy(enemy);
-            actionLog.AppendLine(this.UnitName + "对" + target.UnitName + "发动攻击。");
+            actionLog.AppendLine(this.Name + "对" + target.Name + "发动攻击。");
             //目标受到伤害
             string result = target.BeDamage(this.CurrentAttack);
             actionLog.AppendLine(result);
@@ -228,14 +278,28 @@ namespace BountyHanger.Library
             //判断是否死亡
             if (this.CurrentHP <= 0)
             {
-                this.CurrentHP = 0;
-                this.ActionState = UnitActionState.Dead;
-                return this.UnitName + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。" + this.UnitName + "被击毙。";
+                Die();
+                return this.Name + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。" + this.Name + "被击毙。";
             }
             else
             {
-                return this.UnitName + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。";
+                return this.Name + "受到" + damege + "点伤害，剩余体力：" + this.CurrentHP + "/" + this.MaxHP + "。";
             }
+        }
+
+        /// <summary>
+        /// 单位死亡
+        /// </summary>
+        public void Die()
+        {
+            this.CurrentHP = 0;
+            this.ActionState = UnitActionState.Dead;
+            ReportDeadToTeam();
+        }
+
+        private void ReportDeadToTeam()
+        {
+            this.Team.MemberDead(this);
         }
     }
 }

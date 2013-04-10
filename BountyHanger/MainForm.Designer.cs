@@ -49,7 +49,7 @@
             // 
             // TestButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(506, 204);
+            this.TestButton.Location = new System.Drawing.Point(684, 10);
             this.TestButton.Name = "TestButton";
             this.TestButton.Size = new System.Drawing.Size(75, 23);
             this.TestButton.TabIndex = 1;
@@ -59,10 +59,11 @@
             // 
             // TestTextBox
             // 
-            this.TestTextBox.Location = new System.Drawing.Point(268, 12);
+            this.TestTextBox.Location = new System.Drawing.Point(264, 39);
             this.TestTextBox.Multiline = true;
             this.TestTextBox.Name = "TestTextBox";
-            this.TestTextBox.Size = new System.Drawing.Size(313, 186);
+            this.TestTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.TestTextBox.Size = new System.Drawing.Size(495, 679);
             this.TestTextBox.TabIndex = 2;
             // 
             // MainForm

@@ -17,6 +17,8 @@ namespace BountyHanger.Library
         HeroDone,
         [Description("所有单位行动结束")]
         AllDone,
+        [Description("所有单位死亡，被消灭")]
+        AllDead,
     }
 
     /// <summary>
@@ -41,12 +43,18 @@ namespace BountyHanger.Library
         /// 默认构造函数
         /// </summary>
         public PlayerTeam()
+            : base()
         {
-            this.Hero = new Hero(0, 3);
+            //test
+            this.Hero = new Hero(1, 3);
+            this.Members.Add(this.Hero);
+            this.Hero.JoinTeam(this);
             this.Corps = new Corps[Hero.Leadership];
             for (int i = 0; i < Corps.Length; i++)
             {
-                this.Corps[i] = new Corps(0, 10 * i);
+                this.Corps[i] = new Corps(10+i, 10 * (i + 1));
+                this.Members.Add(this.Corps[i]);
+                this.Corps[i].JoinTeam(this);
             }
             ResetActionState();
         }
@@ -56,15 +64,18 @@ namespace BountyHanger.Library
         /// </summary>
         public void ResetActionState()
         {
-            //重置英雄行动状态
-            Hero.ResetActionState();
-            //重置所有部队的行动状态
-            for (int i = 0; i < Corps.Length; i++)
+            if (this.ActionState != PlayerActionState.AllDead)
             {
-                Corps[i].ResetActionState();
+                //重置英雄行动状态
+                Hero.ResetActionState();
+                //重置所有部队的行动状态
+                for (int i = 0; i < Corps.Length; i++)
+                {
+                    Corps[i].ResetActionState();
+                }
+                //修改队伍行动状态
+                this.ActionState = PlayerActionState.AllReady;
             }
-            //修改队伍行动状态
-            this.ActionState = PlayerActionState.AllReady;
         }
 
         /// <summary>
@@ -75,22 +86,26 @@ namespace BountyHanger.Library
         /// <returns>本次行动日志</returns>
         public string DoNextAction(int turn, MonsterTeam enemy)
         {
+            Unit nextActionUnit = null;
             //根据队伍行动状态选取下一个行动单位并执行动作
             if (this.ActionState == PlayerActionState.AllReady)
             {
                 //英雄行动
                 //修改队伍行动状态为英雄行动结束
                 this.ActionState = PlayerActionState.HeroDone;
-                //notice:v1英雄不会死不判断英雄跟是否存活
-                //执行英雄动作
-                return Hero.Action(turn, enemy);
+                if (Hero.ActionState != UnitActionState.Dead)
+                {
+                    //执行英雄动作
+                    nextActionUnit = Hero;
+                    //return Hero.Action(turn, enemy);
+                }
             }
             else if (this.ActionState == PlayerActionState.HeroDone)
             {
                 //部队行动
                 double maxValue = 0;
                 double randValue = 0;
-                Corps nextCorps = null;
+                //Corps nextCorps = null;
                 int count = 0;
                 //随机选取未行动的部队行动（分配随机数，选取随机数最大的部队准备执行动作）
                 for (int i = 0; i < Corps.Length; i++)
@@ -101,23 +116,26 @@ namespace BountyHanger.Library
                         randValue = RandomBuilder.GetDouble();
                         if (randValue > maxValue)
                         {
-                            nextCorps = Corps[i];
+                            nextActionUnit = Corps[i];
                             maxValue = randValue;
                         }
                     }
                 }
                 //如果为最后一个未行动部队，修改队伍行动状态为全部单位行动结束
-                if (count == 1)
+                if (count <= 1)
                 {
                     this.ActionState = PlayerActionState.AllDone;
                 }
-                //执行该部队动作
-                return nextCorps.Action(turn, enemy);
+            }
+            //如果无可行动单位，返回空字符串
+            if (nextActionUnit == null)
+            {
+                return "";
             }
             else
             {
-                //无可行动单位，返回空字符串
-                return "";
+                //执行该单位动作
+                return nextActionUnit.Action(turn, enemy);
             }
         }
     }

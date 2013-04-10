@@ -5,25 +5,35 @@ using System.Text;
 
 namespace BountyHanger.Library
 {
-    public class Boss:Unit
+    public class Boss : Unit
     {
-        public string Name;
-        public int HealPoint;
-        public int Attack;
-        public Skill ActiveSkill;
-        public Skill PassiveSkill;
-        public object[] LootList;
-        public double[] LootProbability;
-
-        public Boss(string name, int hp, int attack):base(1)
+        private string _bossName = "";
+        /// <summary>
+        /// Boss名称
+        /// </summary>
+        public override string Name
         {
-            this.Name = name;
-            this.HealPoint = hp;
-            this.Attack = attack;
-            this.ActiveSkill = null;
-            this.PassiveSkill = null;
-            this.LootList = null;
-            this.LootProbability = null;
+            get
+            {
+                if (_bossName != "")
+                {
+                    return _bossName;
+                }
+                else
+                {
+                    return base.Name + "(Boss)";
+                }
+            }
+            set
+            {
+                _bossName = value;
+            }
+        }
+
+        public Boss(int unitID)
+            : base(unitID)
+        {
+
         }
     }
 }

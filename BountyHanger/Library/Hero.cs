@@ -8,22 +8,33 @@ namespace BountyHanger.Library
 {
     public class Hero : Unit
     {
+
+        private string _heroName="";
         /// <summary>
         /// 英雄名称
         /// </summary>
-        public string HeroName;
+        public override string Name
+        {
+            get
+            {
+                if (_heroName != "")
+                {
+                    return _heroName;
+                }
+                else
+                {
+                    return base.Name + "(英雄)";
+                }
+            }
+            set
+            {
+                _heroName = value;
+            }
+        }
         /// <summary>
         /// 英雄领导力
         /// </summary>
         public int Leadership;
-        /// <summary>
-        /// 主动技能
-        /// </summary>
-        public Skill ActiveSkill;
-        /// <summary>
-        /// 被动技能
-        /// </summary>
-        public Skill PassiveSkill;
         /// <summary>
         /// 装备
         /// </summary>
@@ -38,7 +49,6 @@ namespace BountyHanger.Library
         public Hero(int unitID, int leadership)
             : base(unitID)
         {
-            this.HeroName = this.UnitName + "(英雄)";
             this.Leadership = leadership;
             this.Equip = null;
         }

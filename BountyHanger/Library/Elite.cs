@@ -5,26 +5,35 @@ using System.Text;
 
 namespace BountyHanger.Library
 {
-    public class Elite:Unit
+    public class Elite : Unit
     {
-        public string Name;
-        public int HealPoint;
-        public int Attack;
-        public Skill ActiveSkill;
-        public Skill PassiveSkill;
-        public object[] LootList;
-        public double[] LootProbability;
-
-
-        public Elite(string name, int hp, int attack):base(1)
+        private string _eliteName = "";
+        /// <summary>
+        /// 精英名称
+        /// </summary>
+        public override string Name
         {
-            this.Name = name;
-            this.HealPoint = hp;
-            this.Attack = attack;
-            this.ActiveSkill = null;
-            this.PassiveSkill = null;
-            this.LootList = null;
-            this.LootProbability = null;
+            get
+            {
+                if (_eliteName != "")
+                {
+                    return _eliteName;
+                }
+                else
+                {
+                    return base.Name + "(精英)";
+                }
+            }
+            set
+            {
+                _eliteName = value;
+            }
+        }
+
+        public Elite(int unitID)
+            : base(unitID)
+        {
+           
         }
     }
 }

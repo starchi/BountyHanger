@@ -46,23 +46,51 @@ namespace BountyHanger.Library
         /// 记录战斗日志到CombatLog中
         /// todo:返回战斗结果
         /// </summary>
-        public void BeginCombat()
+        public string BeginCombat()
         {
             StringBuilder logBuilder = new StringBuilder();
+            string result;
             int turn = 0;
-            while (true)
+            logBuilder.AppendLine("战斗开始");
+            logBuilder.AppendLine("==================================================");
+            while (turn < 100)
             {
                 turn++;//回合计数
+                logBuilder.AppendLine("第" + turn + "回合：");
                 //如果有一方尚未行动完毕，则继续顺序行动，否则进入下一回合
                 while (PlayerTeam.ActionState != PlayerActionState.AllDone || MonsterTeam.ActionState != MonsterActionState.AllDone)
                 {
-                    //玩家队伍
-                    PlayerTeam.DoNextAction(turn,MonsterTeam);
-                    //MonsterTeam.DoNextAction(turn,PlayerTeam);
+                    //玩家怪物轮流行动
+                    result = PlayerTeam.DoNextAction(turn, MonsterTeam);
+                    if (result != "")
+                    {
+                        logBuilder.AppendLine(result);
+                    }
+                    if (PlayerTeam.IsDetroyed || MonsterTeam.IsDetroyed)
+                    {
+                        logBuilder.AppendLine("战斗结束，" + ((PlayerTeam.IsDetroyed) ? "玩家失败" : "玩家胜利") + "！");
+                        logBuilder.AppendLine("==================================================");
+                        return logBuilder.ToString();
+                    }
+                    result = MonsterTeam.DoNextAction(turn, PlayerTeam);
+                    if (result != "")
+                    {
+                        logBuilder.AppendLine(result);
+                    }
+                    if (PlayerTeam.IsDetroyed || MonsterTeam.IsDetroyed)
+                    {
+                        logBuilder.AppendLine("战斗结束：" + ((PlayerTeam.IsDetroyed) ? "玩家失败" : "玩家胜利") + "！");
+                        logBuilder.AppendLine("==================================================");
+                        return logBuilder.ToString();
+                    }
                 }
+                logBuilder.AppendLine("--------------------------------------------------");
+                PlayerTeam.ResetActionState();
+                MonsterTeam.ResetActionState();
             }
+            logBuilder.AppendLine("战斗结束：玩家部队已经筋疲力尽了，暂且撤退。");
+            logBuilder.AppendLine("==================================================");
+            return logBuilder.ToString();
         }
-
-
     }
 }
